@@ -16,9 +16,8 @@
         var heartbeatInterval;
 
         function connect() {
-            var ws = new WebSocket('ws://localhost:8090/sub');
+            var ws = new WebSocket('ws://123.59.41.89:8090/sub');
             var auth = false;
-
             ws.onopen = function() {
                 getAuth();
             }
@@ -61,9 +60,7 @@
                     'ver': 1,
                     'op': 7,
                     'seq': 1,
-                    'body': {
-                        'data': {}
-                    }
+                    'body': self.options.auth
                 }));
             }
 

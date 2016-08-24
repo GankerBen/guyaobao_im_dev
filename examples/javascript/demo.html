@@ -8,12 +8,86 @@
   <body>
     <h1>client demo</h1>
     <script src="client.js"></script>
+    <script src="client.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
     <script>
-      var client = new MyClient({
-        notify: function(data) {
-          alert(data);
+        // 初始化IM客户端库
+        var client = new MyClient({
+            auth: {
+                // 房间ID，必须为整数
+                rid: 1,
+                // 用户ID，必须为整数
+                uid: 1
+            },
+            notify: function(data) {
+                //接收到消息
+                console.log("receive message:", data);
+            }
+        });
+
+        // 给指定用户发消息
+        function unicast(toUid, message){
+            jQuery.support.cors = true;
+            $.ajax({
+                type: 'post',
+                url: 'http://123.59.41.89:8091/1/push?uid=' + toUid,
+                contentType: "application/json; charset=utf-8",
+                async:true,
+                timeout: 3000,
+                data: JSON.stringify(message),
+                success: function(response){
+                    console.log("unicast response:", response);
+                },
+                error: function(e){
+                    // 网络错误
+                }
+            });
         }
-      });
+
+        // 给指定房间广播消息
+        function broadcastRoom(toRid, message){
+            jQuery.support.cors = true;
+            $.ajax({
+                type: 'post',
+                url: 'http://123.59.41.89:8091/1/push/room?rid=' + toRid,
+                contentType: "application/json; charset=utf-8",
+                async:true,
+                timeout: 3000,
+                data: JSON.stringify(message),
+                success: function(response){
+                    console.log("broadcast room response:", response);
+                },
+                error: function(e){
+                    // 网络错误
+                }
+            });
+        }
+
+        // 给所有房间广播消息
+        function broadcastAll(message){
+            jQuery.support.cors = true;
+            $.ajax({
+                type: 'post',
+                url: 'http://123.59.41.89:8091/1/push/all',
+                contentType: "application/json; charset=utf-8",
+                async:true,
+                timeout: 3000,
+                data: JSON.stringify(message),
+                success: function(response){
+                    console.log("broadcast all response:", response);
+                },
+                error: function(e){
+                    // 网络错误
+                }
+            });
+        }
+
+        // test
+        var st = setInterval(function(){
+            unicast(1, {'message': 'hello guys'});
+            broadcastRoom(1, {'message': 'hello room guys'});
+            broadcastAll({'message': 'hello all guys'});
+        }, 3000);
     </script>
   </body>
 </html>
