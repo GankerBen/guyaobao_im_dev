@@ -1,12 +1,17 @@
 package main
 
 import (
+	"errors"
 	inet "goim/libs/net"
 	"goim/libs/proto"
 	"net"
 	"net/rpc"
 
 	log "github.com/thinkboy/log4go"
+)
+
+var (
+	ErrUserId = errors.New("bad user id < 0")
 )
 
 func InitRPC(bs []*Bucket) (err error) {
@@ -58,6 +63,9 @@ func (r *RouterRPC) Ping(arg *proto.NoArg, reply *proto.NoReply) error {
 }
 
 func (r *RouterRPC) Put(arg *proto.PutArg, reply *proto.PutReply) error {
+	if arg.UserId < 0 {
+		return ErrUserId
+	}
 	reply.Seq = r.bucket(arg.UserId).Put(arg.UserId, arg.Server, arg.RoomId)
 	return nil
 }

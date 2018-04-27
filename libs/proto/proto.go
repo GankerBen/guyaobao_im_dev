@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+
+	log "code.google.com/p/log4go"
 )
 
 // for tcp
@@ -188,7 +190,9 @@ func (p *Proto) WriteWebsocket(wr *websocket.Conn) (err error) {
 	if p.Body == nil {
 		p.Body = emptyJSONBody
 	}
-	// [{"ver":1,"op":8,"seq":1,"body":{}}, {"ver":1,"op":3,"seq":2,"body":{}}]
+
+	log.Debug("WriteWebsocket: %s", p.Body)
+
 	if p.Operation == define.OP_RAW {
 		// batch mod
 		var b = bytes.NewWriterSize(len(p.Body) + 40*RawHeaderSize)

@@ -5,6 +5,8 @@ import (
 	"goim/libs/proto"
 
 	//log "github.com/thinkboy/log4go"
+
+	log "code.google.com/p/log4go"
 )
 
 // Channel used by message pusher send msg to write goroutine.
@@ -29,6 +31,7 @@ func (c *Channel) Push(p *proto.Proto) (err error) {
 	select {
 	case c.signal <- p:
 	default:
+		log.Warn("Push to room %d failed: the queue is full, discard the message: %#v", c.RoomId, p)
 	}
 	return
 }

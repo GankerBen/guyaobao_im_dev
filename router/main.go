@@ -21,6 +21,9 @@ func main() {
 	log.LoadConfiguration(Conf.Log)
 	defer log.Close()
 	log.Info("router[%s] start", VERSION)
+
+	log.Debug("Conf: %#v", Conf)
+
 	// start prof
 	perf.Init(Conf.PprofAddrs)
 	// start rpc
